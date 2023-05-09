@@ -5,10 +5,23 @@ const Posts = () => {
     const [posts, setPosts] = React.useState([]);
 
     React.useEffect(() => {
+        const localPosts = localStorage.getItem('posts');
+        if (localPosts) {
+            const parsedPosts = JSON.parse(localPosts);
+            if (Array.isArray(parsedPosts)) {
+                setPosts(parsedPosts);
+                return;
+            }
+        }
+
         fetch('https://jsonplaceholder.typicode.com/posts')
             .then((response) => response.json())
-            .then((data) => setPosts(data));
+            .then((data) => {
+                setPosts(data);
+                localStorage.setItem('posts', JSON.stringify(data));
+            });
     }, []);
+
 
     return (
         <div>

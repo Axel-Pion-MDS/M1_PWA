@@ -3,12 +3,15 @@ import { useParams } from 'react-router-dom';
 
 const Post = () => {
     const { id } = useParams();
-    const [post, setPost] = useState(null);
+    const [post, setPost] = useState(localStorage.getItem(`post_${id}`) ? JSON.parse(localStorage.getItem(`post_${id}`) || '') : null);
 
     useEffect(() => {
         fetch(`https://jsonplaceholder.typicode.com/posts/${id}`)
             .then((response) => response.json())
-            .then((data) => setPost(data));
+            .then((data) => {
+                setPost(data);
+                localStorage.setItem(`post_${id}`, JSON.stringify(data));
+            });
     }, [id]);
 
     if (!post) {
